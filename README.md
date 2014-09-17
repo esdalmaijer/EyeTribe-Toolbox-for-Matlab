@@ -44,6 +44,29 @@ own GUI (`C:\Program Files (x86)\EyeTribe\Client\EyeTribeWinUI.exe`)
 *before* starting any software that calls upon the EyeTribe Toolbox
 for Matlab.
 
+DOWNLOAD
+--------
+
+1) Go to: [https://github.com/esdalmaijer/EyeTribe-Toolbox-for-Matlab](https://github.com/esdalmaijer/EyeTribe-Toolbox-for-Matlab)
+
+2) Press the Download ZIP button, or click this [direct link](https://github.com/esdalmaijer/EyeTribe-Toolbox-for-Matlab/archive/master.zip).
+
+3) Extract the ZIP archive you just downloaded.
+
+4) Copy the folder `EyeTribe_for_Matlab` to where you want it to be
+(e.g. in your *Documents* folder, under *MATLAB*).
+
+5) In Matlab, go to *File -> Set Path -> Add folder* and select
+the folder you copied at step 4.
+
+Alternatively, place the following code at the start of your experiment:
+
+~~~ .matlab
+% assuming you placed the EyeTribe_for_Matlab directly under C:
+addpath('C:\EyeTribe_for_Matlab')
+~~~
+
+
 USAGE
 -----
 
