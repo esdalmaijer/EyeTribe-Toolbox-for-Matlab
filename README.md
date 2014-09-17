@@ -1,7 +1,7 @@
 EyeTribe Toolbox for Matlab
 ===========================
 
-version 0.0.1 (16-Sep-2014)
+version 0.0.2 (17-Sep-2014)
 
 
 ABOUT
@@ -28,10 +28,21 @@ So, out of lazine... Err... Out of a well-planned timing management
 effort to avoid time loss by re-inventing the wheel, I simply used
 [PyTribe](https://github.com/esdalmaijer/PyTribe) in a short Python script (see the `python_source` folder for
 the source) to compile a Windows executable, which should be run
-before you run your Matlab script. Currently, the toolbox does not
-have it's own calibration routine yet, but this will be implemented
-shortly using the [PsychToolbox](https://psychtoolbox.org/HomePage).
+before you run your Matlab script.
 
+The calibration routine is based on the [PsychToolbox](https://psychtoolbox.org/HomePage) for Matlab,
+and requires an active window to be passed to it. This assures that
+you are free to calibrate the tracker at any given moment in your
+experiment, without having any external calibration routine battle
+with your experiment for control of the active display.
+
+If you do not want to calibrate using the PsychToolbox, you can still
+use the EyeTribe Toolbox for Matlab, by simply NOT calling the
+`eyetribe_calibrate` function. Please do note that you should then
+calibrate the system with your own means, e.g. by using the EyeTribe's
+own GUI (`C:\Program Files (x86)\EyeTribe\Client\EyeTribeWinUI.exe`)
+*before* starting any software that calls upon the EyeTribe Toolbox
+for Matlab.
 
 USAGE
 -----
@@ -39,18 +50,25 @@ USAGE
 1. Start EyeTribe Server
 	`C:\Program Files(x86)\EyeTribe\Server\EyeTribe.exe`
 
-2. Start EyeTribe UI
-	`C:\Program Files(x86)\EyeTribe\Client\EyeTribeWinUI.exe`
+2. Start `EyeTribe_Matlab_server.exe`.
 
-3. Press the Calibrate button to calibrate the system.
-
-4. Start `EyeTribe_Matlab_server.exe`.
-
-5. Run your Matlab script, e.g. the one below:
+3. Run your Matlab script, e.g. the one below:
 
 ~~~ .matlab
+% don't bother with vsync tests for this demo
+Screen('Preference', 'SkipSyncTests', 1);
+
 % initialize connection
 [success, connection] = eyetribe_init('test');
+
+% open a new window
+window = Screen('OpenWindow', 2);
+
+% calibrate the tracker
+success = eyetribe_calibrate(connection, window);
+
+% show blank window
+Screen('Flip', window);
 
 % start recording
 success = eyetribe_start_recording(connection);
@@ -61,8 +79,8 @@ success = eyetribe_log(connection, 'TEST_START');
 % get a few samples
 for i = 1:60
     pause(0.0334)
-    [succes, x, y] = eyetribe_sample(connection);
-    [succes, size] = eyetribe_pupil_size(connection);
+    [success, x, y] = eyetribe_sample(connection);
+    [success, size] = eyetribe_pupil_size(connection);
     disp(['x=' num2str(x) ', y=' num2str(y) ', s=' num2str(size)])
 end
 
@@ -73,6 +91,9 @@ success = eyetribe_log(connection, 'TEST_STOP');
 success = eyetribe_stop_recording(connection);
 
 % close connection
-succes = eyetribe_close(connection);
+success = eyetribe_close(connection);
+
+% close window
+Screen('Close', window);
 ~~~
 
