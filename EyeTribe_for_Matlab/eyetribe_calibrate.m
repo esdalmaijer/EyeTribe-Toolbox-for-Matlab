@@ -21,10 +21,12 @@ success = 0;
 
 % get screen colours
 fgc = BlackIndex(0);
-bgc = round(WhiteIndex(0) / 2);
 
 % get screen dimensions
 [w, h] = Screen('WindowSize', window);
+
+% Dot Size - a vector that will be looped over when shrinking the dot
+dotSize = round([linspace(40, 10, 30), 10 - 5*sin(linspace(0, 4*pi, 45))]);
 
 % point locations
 x = [];
@@ -51,11 +53,13 @@ if strcmp(message, 'success')
     
         % % % % %
         % POINTS
-        
+        pointorder = randperm(9);
+        x = x(pointorder);
+        y = y(pointorder);
         % loop through all points in a randomized order
-        for i = randperm(9)
+        for i = 1:9
             % check if the abort key was pressed
-            [keyIsDown, secs, keyCode, deltaSecs] = KbCheck();
+            [keyIsDown, ~, keyCode, ~] = KbCheck();
             if keyIsDown == 1
                 if sum(strcmp(KbName(keyCode), 'q')) > 0
                     % send abort message
@@ -69,7 +73,30 @@ if strcmp(message, 'success')
                 end
             end
             % draw new point
-            Screen('FillOval', window, fgc, [x(i)-5 y(i)-5 x(i)+5 y(i)+5]);
+            
+            % move dot linearly
+            if i>1
+                % if not first point, move from previous point to next point
+                speed = round(20 * ( sqrt( (x(1, i-1)-x(1, i))^2 +  (y(1, i-1)-y(1, i))^2)/(0.4*h) ));
+                movePoint = [linspace(x(1, i-1), x(1, i), speed); linspace(y(1, i-1), y(1, i), speed)];
+            elseif i == 1;
+                % if first point, move from the very last point to first
+                % point
+                speed = round(20 * ( sqrt( (x(1, end)-x(1, 1))^2 +  (y(1, end)-y(1, 1))^2)/(0.4*h)));
+                movePoint = [linspace(x(1, end), x(1, 1), speed); linspace(y(1, end), y(1, 1), speed)];
+            end
+            for ii = 1:speed
+                Screen('FillOval', window, fgc, [movePoint(1, ii)-dotSize(1)/2, movePoint(2, ii)-dotSize(1)/2, movePoint(1, ii)+dotSize(1)/2, movePoint(2, ii)+dotSize(1)/2]);
+                Screen('Flip', window);
+            end
+            
+            % shrink dot linearly (+ sinusoid wobble)
+            for ii = 1:numel(dotSize);
+                Screen('FillOval', window, fgc, [x(1, i)-dotSize(ii)/2, y(1, i)-dotSize(ii)/2, x(1, i)+dotSize(ii)/2, y(1, i)+dotSize(ii)/2]);
+                Screen('Flip', window);
+            end
+            
+            Screen('FillOval', window, fgc, [x(i)-dotSize(end)/2 y(i)-dotSize(end)/2 x(i)+dotSize(end)/2 y(i)+dotSize(end)/2]);
             Screen('Flip', window);
             % pause for a bit (to allow a saccade to land on the new point)
             pause(1);
@@ -144,7 +171,7 @@ if strcmp(message, 'success')
         pressed = 0;
         while pressed == 0
             % wait for a keypress
-            [secs, keyCode, deltaSecs] = KbWait();
+            [~, keyCode, ~] = KbWait();
             % 'q' - quit key
             if sum(strcmp(KbName(keyCode), 'a')) > 0
                 % key is pressed, stop calibration
