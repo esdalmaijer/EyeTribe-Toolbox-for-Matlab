@@ -67,8 +67,8 @@ addpath('C:\EyeTribe_for_Matlab')
 ~~~
 
 
-USAGE
------
+USAGE ON WINDOWS
+----------------
 
 1. Start EyeTribe Server
 	`C:\Program Files(x86)\EyeTribe\Server\EyeTribe.exe`
@@ -76,6 +76,25 @@ USAGE
 2. Start `EyeTribe_Matlab_server.exe`.
 
 3. Run your Matlab script, e.g. the one below:
+
+USAGE ON OS X AND LINUX
+-----------------------
+
+Thanks to [@shandelman116](https://github.com/shandelman116) for trying this out (see [issue #4](https://github.com/esdalmaijer/EyeTribe-Toolbox-for-Matlab/issues/4)).
+
+1. Open a Terminal.
+2. Use the `cd` function to go to the python_source folder. An example:
+~~~
+cd /home/python_source
+~~~
+3. Use Python to run the source. Python should be installed on any Linux system, and I think OS X usually comes with it as well. Type the following command in the Terminal:
+~~~
+python EyeTribe_Matlab_server.py
+~~~
+4. Now run your Matlab script (but do it within two minutes of starting the Python script, because it will time out after that).
+
+EXAMPLE SCRIPT
+--------------
 
 ~~~ .matlab
 % don't bother with vsync tests for this demo
