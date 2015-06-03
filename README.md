@@ -1,7 +1,7 @@
 EyeTribe Toolbox for Matlab
 ===========================
 
-version 0.0.2 (17-Sep-2014)
+version 0.0.3 (03-Jun-2015)
 
 
 ABOUT
