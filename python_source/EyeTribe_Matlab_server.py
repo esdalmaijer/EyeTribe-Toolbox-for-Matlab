@@ -285,7 +285,7 @@ while not stopped:
 			if size == None:
 				x = -999
 			# send message
-			conn.send("success;s=%d" % (size))
+			conn.send("success;s=%.4f" % (size))
 	
 	# CLOSE
 	elif message == 'Close':
