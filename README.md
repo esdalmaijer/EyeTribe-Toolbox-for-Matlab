@@ -44,6 +44,30 @@ own GUI (`C:\Program Files (x86)\EyeTribe\Client\EyeTribeWinUI.exe`)
 *before* starting any software that calls upon the EyeTribe Toolbox
 for Matlab.
 
+IMPORTANT
+---------
+
+A very common assumption among people using the EyeTribe for Matlab
+Toolbox is that calling the sample function is a requirement. This is
+**not** true! After calling `eyetribe_start_recording` the executable
+(*EyeTribe_Matlab_server.exe*) will make sure that data will be written
+to the log file. Calling `eyetribe_stop_recording` will halt data
+logging. The `eyetribe_sample` and `eyetribe_pupil_size` functions have
+nothing to do with data recording!
+
+So why are they there? Well, sometimes you want to use participant's
+point of regard to change something on-screen or to give feedback. To
+this end, you can call `eyetribe_sample` to get the most recent gaze
+coordinates. These can be used to set the location of a stimulus (e.g.
+to lock it to gaze position), or to monitor whether a participants is
+looking at a certain stimulus.
+
+In sum, the `eyetribe_sample` and `eyetribe_pupil_size` functions are
+there to support gaze-contingent displays. They are **not** related to
+the recording of data: the executable running in the background will
+handle this in the background, storing gaze and pupil data in a text
+file.
+
 DOWNLOAD
 --------
 
@@ -119,6 +143,9 @@ success = eyetribe_start_recording(connection);
 success = eyetribe_log(connection, 'TEST_START');
 
 % get a few samples
+% NOTE: this is NOT necessary for data recording and
+% collection, but just a demonstration of the sample
+% and pupil_size functions!
 for i = 1:60
     pause(0.0334)
     [success, x, y] = eyetribe_sample(connection);

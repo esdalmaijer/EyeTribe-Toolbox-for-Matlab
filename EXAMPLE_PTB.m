@@ -27,6 +27,9 @@ success = eyetribe_start_recording(connection);
 success = eyetribe_log(connection, 'TEST_START');
 
 % get a few samples
+% NOTE: this is NOT necessary for data recording and
+% collection, but just a demonstration of the sample
+% and pupil_size functions!
 for i = 1:60
     pause(0.0334)
     [succes, x, y] = eyetribe_sample(connection);
