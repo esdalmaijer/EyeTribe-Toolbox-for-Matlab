@@ -1,3 +1,3 @@
-"C:\Python27\python.exe" setup.py py2exe
+"C:\Anaconda\python.exe" setup.py py2exe
 
 pause
