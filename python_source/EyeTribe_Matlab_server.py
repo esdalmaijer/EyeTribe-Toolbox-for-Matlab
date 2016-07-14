@@ -92,7 +92,8 @@ while not stopped:
 				x = int(message[xpos+2:ypos-1])
 				y = int(message[ypos+2:])
 				# send command and message
-				tracker.calibration.pointstart(x,y)
+				if tracker._tracker.get_iscalibrating():
+					tracker.calibration.pointstart(x,y)
 				conn.send('success')
 			except:
 				print("ERROR in Calibration pointstart: could not parse message '%s'" % message)
@@ -101,7 +102,8 @@ while not stopped:
 		# POINT END
 		if message == "Calibration pointend":
 			try:
-				result = tracker.calibration.pointend()
+				if tracker._tracker.get_iscalibrating():
+					result = tracker.calibration.pointend()
 				conn.send('success')
 			except:
 				print("ERROR in Calibration pointend: failed to end point")
@@ -122,10 +124,8 @@ while not stopped:
 		# GET RESULT
 		if message == "Calibration result":
 			try:
-				# check if the results are in yet
-				if type(result) != dict:
-					# explicitly get the results
-					tracker._tracker.get_calibresult()
+				# get the results
+				result = tracker._tracker.get_calibresult()
 				# format the results to send back to Matlab
 				# (results should be formatted as a string makes sense to
 				# Matlab when calling eval('result = %s'))
@@ -195,6 +195,14 @@ while not stopped:
 		# go into calibration mode
 		else:
 			try:
+				if tracker._tracker.get_iscalibrating():
+					print("Calibration start: aborting running calibration!")					
+					tracker.calibration.abort()
+				if tracker._tracker.get_iscalibrated():
+					print("Calibration start: clearing the existing calibration!")
+					tracker.calibration.clear()
+				time.sleep(0.1)
+				print("Calibration start: starting calibration!")
 				tracker.calibration.start(pointcount=9)
 				conn.send('success')
 				calibrationmode = True
